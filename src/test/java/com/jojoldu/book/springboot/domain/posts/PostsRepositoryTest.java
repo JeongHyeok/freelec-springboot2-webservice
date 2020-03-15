@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -34,10 +35,22 @@ public class PostsRepositoryTest {
 
         List<Posts> postsList = postsRepository.findAll();
 
-        System.out.println(postsList.toString());
         Posts post = postsList.get(0);
         Assertions.assertThat(post.getTitle()).isEqualTo(title);
         Assertions.assertThat(post.getContent()).isEqualTo("테스트 본문");
-        //Posts posts = new Posts()
+    }
+
+    @Test
+    public void baseTimeEntityResist(){
+        LocalDateTime now = LocalDateTime.of(2020, 03, 14, 12, 0, 0, 0);
+        postsRepository.save(Posts.builder().title("title").content("content").author("author").build());
+
+        List<Posts> postsList = postsRepository.findAll();
+
+        Posts post = postsList.get(0);
+
+        System.out.println(">>>>>>>>> createDate=" + post.getCreateDate() + ", modifiedDate=" + post.getModifiedDate());
+        Assertions.assertThat(post.getCreateDate()).isAfter(now);
+        Assertions.assertThat(post.getModifiedDate()).isAfter(now);
     }
 }
